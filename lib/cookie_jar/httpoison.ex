@@ -49,8 +49,22 @@ if Code.ensure_loaded?(HTTPoison) do
       do_update_jar_cookies(jar, headers)
       response
     end
+    defp update_jar_cookies(_jar, %HTTPoison.AsyncResponse{} = response) do
+      response
+    end
+    defp update_jar_cookies(jar, %HTTPoison.AsyncHeaders{headers: headers} = response) do
+      do_update_jar_cookies(jar, headers)
+      response
+    end
 
     defp update_jar_cookies(jar, {:ok, %HTTPoison.Response{headers: headers} = response}) do
+      do_update_jar_cookies(jar, headers)
+      {:ok, response}
+    end
+    defp _update_jar_cookies(_jar, {:ok, %HTTPoison.AsyncResponse{} = response}) do
+      {:ok, response}
+    end
+    defp update_jar_cookies(jar, {:ok, %HTTPoison.AsyncHeaders{headers: headers} = response}) do
       do_update_jar_cookies(jar, headers)
       {:ok, response}
     end
