@@ -8,6 +8,8 @@ if Code.ensure_loaded?(HTTPoison) do
     function calls, i.e. #{inspect(@actions_without_body ++ @actions_with_body)}
     """
 
+    alias HTTPoison.AsyncResponse, as AsyncResponse
+
     import CookieJar.SpecUtils, only: [httpoison_spec: 2]
 
     for action <- @actions_without_body do
@@ -49,7 +51,7 @@ if Code.ensure_loaded?(HTTPoison) do
       do_update_jar_cookies(jar, headers)
       response
     end
-    defp update_jar_cookies(_jar, %HTTPoison.AsyncResponse{} = response) do
+    defp update_jar_cookies(_jar, %AsyncResponse{} = response) do
       response
     end
     defp update_jar_cookies(jar, %HTTPoison.AsyncHeaders{headers: headers} = response) do
@@ -61,7 +63,7 @@ if Code.ensure_loaded?(HTTPoison) do
       do_update_jar_cookies(jar, headers)
       {:ok, response}
     end
-    defp _update_jar_cookies(_jar, {:ok, %HTTPoison.AsyncResponse{} = response}) do
+    defp _update_jar_cookies(_jar, {:ok, %AsyncResponse{} = response}) do
       {:ok, response}
     end
     defp update_jar_cookies(jar, {:ok, %HTTPoison.AsyncHeaders{headers: headers} = response}) do
